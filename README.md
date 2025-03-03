@@ -1,2 +1,8 @@
-# FormCoachAI
-FormCoachAI is an innovative web application designed to help users improve their exercise form through AI-powered analysis. The platform aims to provide real-time feedback on workout form, focusing initially on SBD exercises with plans to expand to other movements.
+# React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh

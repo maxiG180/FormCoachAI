@@ -36,7 +36,7 @@ export default async function BlogPostPage({ params }: Props) {
       {/* Header */}
       <div className="max-w-4xl mx-auto mb-10">
         <div className="mb-4">
-          
+          <a
             href={`/blog/${category}`}
             className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium hover:bg-blue-200 transition-colors"
           >
@@ -92,7 +92,7 @@ export default async function BlogPostPage({ params }: Props) {
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             {relatedPosts.map((related) => (
-              
+              <a
                 key={related.slug}
                 href={`/blog/${related.category}/${related.slug}`}
                 className="group"

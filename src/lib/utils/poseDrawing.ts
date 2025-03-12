@@ -1,7 +1,13 @@
 // lib/utils/poseDrawing.ts
-
 import { PoseLandmarkerResult } from '@mediapipe/tasks-vision';
 import { FeedbackItem } from '@/lib/types/analyze';
+
+// Define a type for landmarks to avoid using 'any'
+interface Landmark {
+  x: number;
+  y: number;
+  visibility: number;
+}
 
 export const drawPoseOnCanvas = (
   pose: PoseLandmarkerResult,
@@ -96,7 +102,8 @@ export const drawPoseOnCanvas = (
     const leftShoulderX = landmarks[11].x * videoDisplayWidth + xOffset;
     const rightShoulderX = landmarks[12].x * videoDisplayWidth + xOffset;
     const shoulderY = ((landmarks[11].y + landmarks[12].y) / 2) * videoDisplayHeight + yOffset;
-    const shoulderWidth = rightShoulderX - leftShoulderX;
+    // Comment out the unused variable to avoid lint errors
+    // const shoulderWidth = rightShoulderX - leftShoulderX;
     
     // Draw barbell with 3D effect
     const barHeight = 15 * sizeRatio;
@@ -107,8 +114,8 @@ export const drawPoseOnCanvas = (
     barGradient.addColorStop(1, 'rgba(150, 150, 150, 0.7)');
     
     ctx.fillStyle = barGradient;
-    ctx.rect(leftShoulderX - shoulderWidth/2, shoulderY - barHeight/2, 
-             shoulderWidth * 2, barHeight);
+    ctx.rect(leftShoulderX - (rightShoulderX - leftShoulderX)/2, shoulderY - barHeight/2, 
+             (rightShoulderX - leftShoulderX) * 2, barHeight);
     ctx.fill();
     
     // Add a metallic stroke to the bar
@@ -122,7 +129,7 @@ export const drawPoseOnCanvas = (
     // Draw multiple plates on each side
     [-1, 1].forEach((side) => { // -1 for left, 1 for right
       const plateColors = ['red', 'blue', 'yellow', 'green'];
-      const plateX = side === -1 ? leftShoulderX - shoulderWidth/2 - 20 : rightShoulderX + shoulderWidth/2 + 20;
+      const plateX = side === -1 ? leftShoulderX - (rightShoulderX - leftShoulderX)/2 - 20 : rightShoulderX + (rightShoulderX - leftShoulderX)/2 + 20;
       
       // Draw multiple plates stacked
       for (let i = 0; i < 2; i++) {
@@ -360,87 +367,90 @@ export const drawPoseOnCanvas = (
       // Add highlight to give 3D effect
       ctx.beginPath();
       ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-      ctx.arc(x - jointRadius/3, y - jointRadius/3, jointRadius/3, 0, 2 * Math.PI);
-      ctx.fill();
-    }
-  });
+     // lib/utils/poseDrawing.ts (continued)
+     ctx.arc(x - jointRadius/3, y - jointRadius/3, jointRadius/3, 0, 2 * Math.PI);
+     ctx.fill();
+   }
+ });
 
-  // Process and show feedback with enhanced visuals
-  const currentTime = Date.now();
-  const recentFeedback = feedback.filter(item => currentTime - item.timestamp < 2000);
-  
-  recentFeedback.forEach(item => {
-    if (item.type === 'error' && item.keypoints && item.keypoints.length >= 3) {
-      const [start, mid, end] = item.keypoints;
-      
-      if (start && mid && end && 
-          start.visibility > 0.3 && 
-          mid.visibility > 0.3 && 
-          end.visibility > 0.3) {
-        
-        const feedbackAge = currentTime - item.timestamp;
-        const fadeOutStart = 1500;
-        const fadeOutDuration = 500;
-        
-        let opacity = 1;
-        if (feedbackAge > fadeOutStart) {
-          opacity = Math.max(0, 1 - (feedbackAge - fadeOutStart) / fadeOutDuration);
-        }
-        
-        // Draw feedback line with glow effect
-        const startX = start.x * videoDisplayWidth + xOffset;
-        const startY = start.y * videoDisplayHeight + yOffset;
-        const midX = mid.x * videoDisplayWidth + xOffset;
-        const midY = mid.y * videoDisplayHeight + yOffset;
-        const endX = end.x * videoDisplayWidth + xOffset;
-        const endY = end.y * videoDisplayHeight + yOffset;
-        
-        // Draw glow
-        ctx.beginPath();
-        ctx.lineWidth = lineWidth * 3;
-        ctx.strokeStyle = `rgba(255, 0, 0, ${opacity * 0.3})`;
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(midX, midY);
-        ctx.lineTo(endX, endY);
-        ctx.stroke();
-        
-        // Draw main line
-        ctx.beginPath();
-        ctx.lineWidth = lineWidth * 1.5;
-        ctx.strokeStyle = `rgba(255, 0, 0, ${opacity})`;
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(midX, midY);
-        ctx.lineTo(endX, endY);
-        ctx.stroke();
-        
-        // Draw feedback points with pulsing effect
-        const pulseSize = 1 + 0.3 * Math.sin(Date.now() / 150); // More pronounced pulsing
-        
-        [start, mid, end].forEach((point) => {
-          const x = point.x * videoDisplayWidth + xOffset;
-          const y = point.y * videoDisplayHeight + yOffset;
-          
-          // Draw outer glow
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(255, 0, 0, ${opacity * 0.3})`;
-          ctx.arc(x, y, jointRadius * 2 * pulseSize, 0, 2 * Math.PI);
-          ctx.fill();
-          
-          // Draw inner point
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(255, 0, 0, ${opacity})`;
-          ctx.arc(x, y, jointRadius * 1.2 * pulseSize, 0, 2 * Math.PI);
-          ctx.fill();
-          
-          // Add white highlight to give 3D effect
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(255, 255, 255, ${opacity * 0.6})`;
-          ctx.arc(x - jointRadius/2, y - jointRadius/2, jointRadius/2, 0, 2 * Math.PI);
-          ctx.fill();
-        });
-      }
-    }
-  });
+ // Process and show feedback with enhanced visuals
+ const currentTime = Date.now();
+ const recentFeedback = feedback.filter(item => currentTime - item.timestamp < 2000);
+ 
+ recentFeedback.forEach(item => {
+   if (item.type === 'error' && item.keypoints && item.keypoints.length >= 3) {
+     // Explicitly cast keypoints to Landmark[] to avoid type issues
+     const keypoints = item.keypoints as unknown as Landmark[];
+     const [start, mid, end] = keypoints;
+     
+     if (start && mid && end && 
+         start.visibility > 0.3 && 
+         mid.visibility > 0.3 && 
+         end.visibility > 0.3) {
+       
+       const feedbackAge = currentTime - item.timestamp;
+       const fadeOutStart = 1500;
+       const fadeOutDuration = 500;
+       
+       let opacity = 1;
+       if (feedbackAge > fadeOutStart) {
+         opacity = Math.max(0, 1 - (feedbackAge - fadeOutStart) / fadeOutDuration);
+       }
+       
+       // Draw feedback line with glow effect
+       const startX = start.x * videoDisplayWidth + xOffset;
+       const startY = start.y * videoDisplayHeight + yOffset;
+       const midX = mid.x * videoDisplayWidth + xOffset;
+       const midY = mid.y * videoDisplayHeight + yOffset;
+       const endX = end.x * videoDisplayWidth + xOffset;
+       const endY = end.y * videoDisplayHeight + yOffset;
+       
+       // Draw glow
+       ctx.beginPath();
+       ctx.lineWidth = lineWidth * 3;
+       ctx.strokeStyle = `rgba(255, 0, 0, ${opacity * 0.3})`;
+       ctx.moveTo(startX, startY);
+       ctx.lineTo(midX, midY);
+       ctx.lineTo(endX, endY);
+       ctx.stroke();
+       
+       // Draw main line
+       ctx.beginPath();
+       ctx.lineWidth = lineWidth * 1.5;
+       ctx.strokeStyle = `rgba(255, 0, 0, ${opacity})`;
+       ctx.moveTo(startX, startY);
+       ctx.lineTo(midX, midY);
+       ctx.lineTo(endX, endY);
+       ctx.stroke();
+       
+       // Draw feedback points with pulsing effect
+       const pulseSize = 1 + 0.3 * Math.sin(Date.now() / 150); // More pronounced pulsing
+       
+       [start, mid, end].forEach((point) => {
+         const x = point.x * videoDisplayWidth + xOffset;
+         const y = point.y * videoDisplayHeight + yOffset;
+         
+         // Draw outer glow
+         ctx.beginPath();
+         ctx.fillStyle = `rgba(255, 0, 0, ${opacity * 0.3})`;
+         ctx.arc(x, y, jointRadius * 2 * pulseSize, 0, 2 * Math.PI);
+         ctx.fill();
+         
+         // Draw inner point
+         ctx.beginPath();
+         ctx.fillStyle = `rgba(255, 0, 0, ${opacity})`;
+         ctx.arc(x, y, jointRadius * 1.2 * pulseSize, 0, 2 * Math.PI);
+         ctx.fill();
+         
+         // Add white highlight to give 3D effect
+         ctx.beginPath();
+         ctx.fillStyle = `rgba(255, 255, 255, ${opacity * 0.6})`;
+         ctx.arc(x - jointRadius/2, y - jointRadius/2, jointRadius/2, 0, 2 * Math.PI);
+         ctx.fill();
+       });
+     }
+   }
+ });
 
-  return true;
+ return true;
 };

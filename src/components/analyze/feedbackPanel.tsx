@@ -27,7 +27,12 @@ import {
 interface FeedbackPanelProps {
   className?: string;
   isVideoComplete?: boolean;
-  feedback?: any[];
+  feedback?: {
+    type: string;
+    category: string;
+    message: string;
+    timestamp: number;
+  }[];
   categoryScores?: {
     form: number;
     depth: number;

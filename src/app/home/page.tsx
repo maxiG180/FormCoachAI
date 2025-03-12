@@ -1,7 +1,5 @@
 "use client";
 
-import { useAuth } from "@/contexts/authContext";
-
 // Import components with proper path aliases - using the Coming Soon versions
 import HeroSection from "@/components/home/heroSection"; // Use the coming soon version
 import FeaturesSection from "@/components/home/featuresSection"; // Use the coming soon version
@@ -11,8 +9,6 @@ import PricingSection from "@/components/home/pricingSection"; // Use the coming
 import CTASection from "@/components/home/ctaSection"; // Use the coming soon version
 
 export default function HomePage() {
-  const { user } = useAuth();
-
   return (
     <div className="bg-black min-h-screen">
       {/* Extra padding at the top to account for navbar + banner */}

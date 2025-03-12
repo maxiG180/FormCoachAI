@@ -1,5 +1,5 @@
 import React from "react";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { exerciseStats, formatDate } from "@/data/mockExerciseData";
 import { ExerciseName } from "@/lib/types/exercise";
 
@@ -18,7 +18,7 @@ const ExerciseSelector: React.FC<ExerciseSelectorProps> = ({
   onSelectExercise,
 }) => {
   // Define the exercise images with proper typing
-  const exerciseImages: Record<ExerciseName, any> = {
+  const exerciseImages: Record<ExerciseName, StaticImageData> = {
     "Bench Press": benchImg,
     Squats: squatImg,
     Deadlifts: deadliftImg,

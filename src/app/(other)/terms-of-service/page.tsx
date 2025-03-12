@@ -262,7 +262,7 @@ export default function TermsOfService() {
         <p className="mb-4">
           We reserve the right to modify these Terms at any time. We will
           provide notice of significant changes by posting the updated Terms on
-          this page and updating the "Last Updated" date. Your continued use of
+          this page and updating the Last Updated date. Your continued use of
           the Services after such modifications constitutes your acceptance of
           the revised Terms.
         </p>

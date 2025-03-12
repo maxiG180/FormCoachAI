@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { AuthProvider } from "@/contexts/authContext";
 import NavbarWrapper from "@/components/navbarWrapper";
 import Footer from "@/components/layout/footer";

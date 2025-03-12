@@ -1,4 +1,4 @@
-// src/utils/exerciseAnalysis.ts
+// src/lib/utils/exerciseAnalysis.tsx
 import { PoseLandmarkerResult } from "@mediapipe/tasks-vision";
 import { FeedbackItem, AnalysisResult } from "@/lib/types/analyze";
 
@@ -17,6 +17,12 @@ interface SquatState {
 interface PersistentFeedback {
   lastFeedback: FeedbackItem[];
   lastUpdateTime: number;
+}
+
+interface Landmark {
+  x: number;
+  y: number;
+  visibility: number;
 }
 
 const SEVERITY_SCORES = {
@@ -58,7 +64,7 @@ export const analyzeExerciseForm = (
     category: "form" | "depth" | "alignment" | "balance",
     type: "success" | "warning" | "error",
     severity: keyof typeof SEVERITY_SCORES,
-    keypoints: { x: number; y: number; visibility: number }[]
+    keypoints: Landmark[]
   ) => {
     // Only add new feedback if it's not already present
     const isDuplicate = feedback.some(
@@ -66,12 +72,13 @@ export const analyzeExerciseForm = (
     );
 
     if (!isDuplicate) {
+      // Convert landmarks to a compatible format
       feedback.push({
         type,
         category,
         message,
         timestamp: Date.now(),
-        keypoints,
+        keypoints, // Match the structure of FeedbackItem
       });
 
       // Update category scores
@@ -83,11 +90,7 @@ export const analyzeExerciseForm = (
     }
   };
 
-  const isLandmarkVisible = (landmark: {
-    x: number;
-    y: number;
-    visibility: number;
-  }): boolean => {
+  const isLandmarkVisible = (landmark: Landmark): boolean => {
     return landmark && landmark.visibility > MIN_LANDMARK_CONFIDENCE;
   };
 
@@ -146,12 +149,11 @@ export const analyzeExerciseForm = (
           return {
             feedback: [
               {
-                // src/utils/exerciseAnalysis.ts (continued)
                 type: "error",
                 category: "form",
                 message: "Tracking lost - ensure full body visibility",
                 timestamp: Date.now(),
-                keypoints: [],
+                keypoints: [], // Empty array instead of number
               },
             ],
             categoryScores,
@@ -250,7 +252,7 @@ export const analyzeExerciseForm = (
                 "form",
                 "success",
                 "minor",
-                []
+                [] // Empty array for no specific keypoints
               );
             }
           } else {
@@ -301,7 +303,7 @@ export function calculateAngle(
   return angle;
 }
 
-export function resetAnalyzer() {
+export function resetAnalyzer(): void {
   // Reset all state for all exercises
   Object.keys(SQUAT_STATES).forEach((key) => {
     SQUAT_STATES[key] = {
@@ -326,7 +328,7 @@ export function resetAnalyzer() {
   });
 }
 
-export function finishExerciseAnalysis(exercise: string) {
+export function finishExerciseAnalysis(exercise: string): void {
   // Optional: Add any final analysis or cleanup when the video completes
   console.log(`Exercise analysis completed for ${exercise}`);
   console.log(`Final rep count: ${SQUAT_STATES[exercise]?.repCount || 0}`);

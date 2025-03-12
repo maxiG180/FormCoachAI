@@ -22,7 +22,7 @@ export const ProgressBar: React.FC<{
 export const SimpleChart: React.FC<{
   data: ExerciseHistory[];
   height?: number;
-}> = ({ data, height = 100 }) => {
+}> = ({ data }) => {
   // Get min and max for scaling
   const scores = data.map((item) => item.score);
   const minScore = Math.min(...scores);

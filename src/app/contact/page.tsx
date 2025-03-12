@@ -28,8 +28,8 @@ export default function ContactPage() {
             Contact Us
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            We're here to answer your questions and help you get the most out of
-            FormCoachAI.
+            We&apos;re here to answer your questions and help you get the most
+            out of FormCoachAI.
           </p>
         </div>
 

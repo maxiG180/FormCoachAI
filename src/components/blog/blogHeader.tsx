@@ -14,18 +14,8 @@ interface BlogHeaderProps {
 export default function BlogHeader({
   title,
   category,
-  date,
-  author,
   featuredImage,
 }: BlogHeaderProps) {
-  const formattedDate = date
-    ? new Date(date).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : "";
-
   const categoryDisplay = category ? formatCategoryName(category) : "";
 
   // Use a default image as fallback

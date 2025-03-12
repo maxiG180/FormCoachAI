@@ -1,7 +1,7 @@
 // src/app/(protected)/analyze/client.tsx
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import ExerciseSelector from "@/components/analyze/exerciseSelector";
 import UploadSection from "@/components/analyze/uploadSection";
 import FeedbackPanel from "@/components/analyze/feedbackPanel";
@@ -23,6 +23,16 @@ export default function AnalyzeClient() {
   const isMounted = useRef(true);
   const pathname = usePathname();
 
+  // Reset all states completely
+  const resetAllStates = useCallback(() => {
+    setSelectedExercise("");
+    setSelectedFile(null);
+    setIsAnalyzing(false);
+    setIsVideoComplete(false);
+    setShowAnalysisResults(false);
+    resetAnalysisState();
+  }, []);
+
   // Cleanup on unmount and handle re-mount
   useEffect(() => {
     isMounted.current = true;
@@ -33,7 +43,7 @@ export default function AnalyzeClient() {
     return () => {
       isMounted.current = false;
     };
-  }, [pathname]);
+  }, [pathname, resetAllStates]); // Added resetAllStates to dependency array
 
   // State for analysis data
   const [feedback, setFeedback] = useState<FeedbackItem[]>([]);
@@ -46,16 +56,6 @@ export default function AnalyzeClient() {
   const [overallScore, setOverallScore] = useState(0);
   const [repCount, setRepCount] = useState(0);
   const [consecutiveGoodReps, setConsecutiveGoodReps] = useState(0);
-
-  // Reset all states completely
-  const resetAllStates = () => {
-    setSelectedExercise("");
-    setSelectedFile(null);
-    setIsAnalyzing(false);
-    setIsVideoComplete(false);
-    setShowAnalysisResults(false);
-    resetAnalysisState();
-  };
 
   // Reset analysis state function
   const resetAnalysisState = () => {
@@ -123,14 +123,6 @@ export default function AnalyzeClient() {
 
     // Cleanup timer if component unmounts
     return () => clearTimeout(analysisTimer);
-  };
-
-  // Handle returning to upload/selection view
-  const handleUploadNew = () => {
-    setSelectedFile(null);
-    setShowAnalysisResults(false);
-    setIsVideoComplete(false);
-    resetAnalysisState();
   };
 
   // Dummy handler for pose detection

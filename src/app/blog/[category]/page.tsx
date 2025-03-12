@@ -186,8 +186,8 @@ export default async function CategoryPage({
               No articles found
             </h3>
             <p className="text-gray-400 mb-6 max-w-md mx-auto">
-              We haven't published any articles in this category yet, but stay
-              tuned for new content coming soon.
+              We haven &apos; t published any articles in this category yet, but
+              stay tuned for new content coming soon.
             </p>
             <Link
               href="/blog"

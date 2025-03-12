@@ -24,9 +24,6 @@ export default function BlogCard({ post }: BlogCardProps) {
     ? new Date(post.date).toLocaleDateString()
     : "";
 
-  // Default image path
-  const defaultImage = "/img/default-blog-image.jpg";
-
   return (
     <div className="bg-[#0A0D2C] rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-[#1A1F42]">
       <Link href={`/blog/${post.category}/${post.slug}`}>

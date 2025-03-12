@@ -23,6 +23,7 @@ interface VideoPlayerProps {
   selectedExercise: string;
   onPoseDetected?: (pose: PoseLandmarkerResult) => void;
   feedback?: FeedbackItem[];
+  isVideoComplete: boolean;
 }
 
 const VideoPlayer = ({
@@ -32,6 +33,7 @@ const VideoPlayer = ({
   selectedExercise,
   onPoseDetected = () => {},
   feedback = [],
+  isVideoComplete, // Add this line
 }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -311,6 +313,27 @@ const VideoPlayer = ({
                 className="bg-[#FF6500] hover:bg-[#FF6500]/90 text-white px-4 py-2 rounded"
               >
                 Try Again
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Analysis Complete Message */}
+        {isVideoComplete && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-10">
+            <div className="text-center p-4 max-w-sm">
+              <p className="font-semibold text-green-400 text-lg mb-2">
+                Analysis Complete
+              </p>
+              <p className="text-white mb-4">
+                Your video analysis is complete. Check the feedback panel for
+                detailed results.
+              </p>
+              <button
+                onClick={handleRestart}
+                className="bg-[#FF6500] hover:bg-[#FF6500]/90 text-white px-4 py-2 rounded"
+              >
+                Analyze Again
               </button>
             </div>
           </div>

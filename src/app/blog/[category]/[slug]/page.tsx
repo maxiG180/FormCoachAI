@@ -5,13 +5,9 @@ import { getPostBySlug, getRelatedPosts, formatCategoryName } from "@/lib/blog";
 import BlogPostContent from "@/components/blog/blogPostContent";
 import "@/styles/blog.css";
 
-// Use the correct types from Next.js
-export default async function BlogPostPage({
-  params,
-}: {
-  params: { category: string; slug: string };
-}) {
-  const { category, slug } = params;
+// Workaround for the type issue
+export default async function BlogPostPage(props: any) {
+  const { category, slug } = props.params;
   const post = await getPostBySlug(slug, category);
 
   if (!post) {

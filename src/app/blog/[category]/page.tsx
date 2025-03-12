@@ -7,12 +7,17 @@ import { Calendar, ChevronRight } from "lucide-react";
 import BlogCard from "@/components/blog/blogCard";
 import { getPostsByCategory, getCategoryData, getCategories } from "@/lib/blog";
 
+// Define the params type as a Promise for generateMetadata
+type CategoryParams = Promise<{ category: string }>;
+
 export async function generateMetadata({
   params,
 }: {
-  params: { category: string };
+  params: CategoryParams;
 }): Promise<Metadata> {
-  const categoryData = await getCategoryData(params.category);
+  // Await the params to get the actual value
+  const { category } = await params;
+  const categoryData = await getCategoryData(category);
 
   if (!categoryData) {
     return {
@@ -40,10 +45,12 @@ export async function generateStaticParams() {
 export default async function CategoryPage({
   params,
 }: {
-  params: { category: string };
+  params: CategoryParams;
 }) {
+  // Await the params to get the actual value
+  const { category } = await params;
+
   // Using Promise.all to execute requests in parallel
-  const category = params.category;
   const [posts, categoryData, allCategories] = await Promise.all([
     getPostsByCategory(category),
     getCategoryData(category),
@@ -186,7 +193,7 @@ export default async function CategoryPage({
               No articles found
             </h3>
             <p className="text-gray-400 mb-6 max-w-md mx-auto">
-              We haven &apos; t published any articles in this category yet, but
+              We haven&apos;t published any articles in this category yet, but
               stay tuned for new content coming soon.
             </p>
             <Link

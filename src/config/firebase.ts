@@ -31,12 +31,6 @@ googleProvider.setCustomParameters({
   prompt: 'select_account'
 });
 
-// Initialize Analytics conditionally (only in browser environment)
-let analytics;
-if (typeof window !== 'undefined') {
-  analytics = getAnalytics(app);
-}
-
 // Error handling utility
 export const handleAuthError = (error: any): Error => {
   const errorCode = error.code;

@@ -25,7 +25,6 @@ const MediapipeProcessor = ({
   videoRef,
   canvasRef,
   isPlaying,
-  selectedExercise,
   onPoseDetected,
   feedback,
   onTrackingLost,

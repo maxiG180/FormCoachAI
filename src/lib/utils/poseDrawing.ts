@@ -84,7 +84,6 @@ export const drawPoseOnCanvas = (
   };
 
   // Calculate appropriate sizes based on video dimensions
-  const shoulderWidth = Math.abs(landmarks[11].x - landmarks[12].x) * videoDisplayWidth;
   const videoArea = videoDisplayWidth * videoDisplayHeight;
   const sizeRatio = Math.sqrt(videoArea) / 500; // Normalize for different video sizes
   
@@ -417,7 +416,7 @@ export const drawPoseOnCanvas = (
         // Draw feedback points with pulsing effect
         const pulseSize = 1 + 0.3 * Math.sin(Date.now() / 150); // More pronounced pulsing
         
-        [start, mid, end].forEach((point, idx) => {
+        [start, mid, end].forEach((point) => {
           const x = point.x * videoDisplayWidth + xOffset;
           const y = point.y * videoDisplayHeight + yOffset;
           

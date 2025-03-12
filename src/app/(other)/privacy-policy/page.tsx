@@ -189,7 +189,7 @@ export default function PrivacyPolicy() {
 
       <section className="mb-8">
         <h2 className="text-2xl font-bold mb-4 text-[#FF6500]">
-          Children's Privacy
+          Children&apos;s Privacy
         </h2>
         <p className="mb-4">
           Our services are not intended for children under the age of 16. We do
@@ -220,7 +220,7 @@ export default function PrivacyPolicy() {
         <p className="mb-4">
           We may update our Privacy Policy from time to time. We will notify you
           of any changes by posting the new Privacy Policy on this page and
-          updating the "Last Updated" date at the top of this policy.
+          updating the date at the top of this policy.
         </p>
       </section>
 

@@ -85,7 +85,13 @@ export interface FeedbackItem {
   message: string;
   timestamp: number;
   severity?: 'minor' | 'moderate' | 'major';
-  keypoints?: any[];
+  keypoints?: Keypoint[];
+}
+
+export interface Keypoint {
+  x: number;
+  y: number;
+  z?: number;
 }
 
 // User progress over time

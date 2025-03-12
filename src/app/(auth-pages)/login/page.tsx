@@ -32,10 +32,13 @@ export default function Login() {
     try {
       await login(email, password);
       router.push("/dashboard");
-    } catch (error: any) {
-      setError(
-        error.message || "Failed to sign in. Please check your credentials."
-      );
+    } catch (error: unknown) {
+      // Type-safe error handling
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to sign in. Please check your credentials.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -47,8 +50,13 @@ export default function Login() {
     try {
       await googleSignIn();
       router.push("/dashboard");
-    } catch (error: any) {
-      setError(error.message || "Failed to sign in with Google");
+    } catch (error: unknown) {
+      // Type-safe error handling
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to sign in with Google";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -73,7 +81,7 @@ export default function Login() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
+          placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
           required
           rightElement={
             <Link
@@ -120,7 +128,7 @@ export default function Login() {
       </button>
 
       <p className="text-center mt-6 text-gray-400 text-sm">
-        Don't have an account?{" "}
+        Don&apos;t have an account?{" "}
         <Link
           href="/signup"
           className="text-[#FF6500] hover:text-[#FF8533] font-semibold transition-colors"

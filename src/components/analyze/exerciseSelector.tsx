@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Image from "next/image";
 // Import the images directly
 import benchImg from "@/../public/img/bench.png";

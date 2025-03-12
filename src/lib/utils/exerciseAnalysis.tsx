@@ -58,7 +58,7 @@ export const analyzeExerciseForm = (
     category: "form" | "depth" | "alignment" | "balance",
     type: "success" | "warning" | "error",
     severity: keyof typeof SEVERITY_SCORES,
-    keypoints: any[]
+    keypoints: { x: number; y: number; visibility: number }[]
   ) => {
     // Only add new feedback if it's not already present
     const isDuplicate = feedback.some(
@@ -83,7 +83,11 @@ export const analyzeExerciseForm = (
     }
   };
 
-  const isLandmarkVisible = (landmark: any): boolean => {
+  const isLandmarkVisible = (landmark: {
+    x: number;
+    y: number;
+    visibility: number;
+  }): boolean => {
     return landmark && landmark.visibility > MIN_LANDMARK_CONFIDENCE;
   };
 

@@ -1,11 +1,10 @@
 // src/app/blog/page.tsx
 import { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import BlogCard from "@/components/blog/blogCard";
 import CategoryList from "@/components/blog/categoryList";
-import { getAllPosts, getCategories, formatCategoryName } from "@/lib/blog";
-import { ArrowRight, Search } from "lucide-react";
+import { getAllPosts, getCategories } from "@/lib/blog";
+import { Search } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "FormCoachAI Blog | AI-Powered Workout Form Analysis",

@@ -34,14 +34,13 @@ const Navbar = ({ user }: NavbarProps) => {
   }, []);
 
   // Function to get display name - prioritizes email over display name
-  const getUserDisplayName = (user: any) => {
-    if (!user) return "Guest";
+  const getUserDisplayName = (currentUser: User | null) => {
+    if (!currentUser) return "Guest";
 
-    if (user.email) {
+    const email = currentUser.email;
+    if (email) {
       // If we have an email, use it (with optional truncation for very long emails)
-      return user.email.length > 25
-        ? user.email.substring(0, 25) + "..."
-        : user.email;
+      return email.length > 25 ? email.substring(0, 25) + "..." : email;
     }
     return "Guest"; // Fallback if somehow we have no email
   };

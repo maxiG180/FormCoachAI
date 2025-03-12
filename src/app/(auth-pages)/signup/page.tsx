@@ -39,10 +39,13 @@ export default function SignUp() {
       // Log in the user after successful signup
       await login(email, password);
       router.push("/dashboard");
-    } catch (error: any) {
-      setError(
-        error.message || "Failed to create an account. Please try again."
-      );
+    } catch (error: unknown) {
+      // Type-safe error handling
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to create an account. Please try again.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -54,8 +57,13 @@ export default function SignUp() {
     try {
       await googleSignIn();
       router.push("/dashboard");
-    } catch (error: any) {
-      setError(error.message || "Failed to sign in with Google");
+    } catch (error: unknown) {
+      // Type-safe error handling
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to sign in with Google";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -80,7 +88,7 @@ export default function SignUp() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
+          placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
           required
         />
 
@@ -89,7 +97,7 @@ export default function SignUp() {
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="••••••••"
+          placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
           required
         />
 

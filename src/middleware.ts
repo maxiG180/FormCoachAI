@@ -2,9 +2,9 @@
 // In a real Next.js app, this would need server-side authentication checking
 // Since Firebase auth is client-side, we're handling auth protection in the component
 
-import { NextResponse, type NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export function middleware() {
   // We're not doing server-side auth here because Firebase auth is client-side
   // The actual protection is handled by the ProtectedRoute component
   return NextResponse.next();

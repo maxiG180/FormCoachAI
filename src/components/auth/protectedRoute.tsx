@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
 import { useAuth } from "@/contexts/authContext";
-import { Loader } from "lucide-react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

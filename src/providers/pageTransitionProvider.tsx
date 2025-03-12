@@ -9,7 +9,6 @@ import React, {
 } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import LoadingSpinner from "@/components/ui/loadingSpinner";
-import { useRouter } from "next/navigation";
 
 // Create context
 interface PageTransitionContextType {
@@ -27,9 +26,6 @@ const PageTransitionContext = createContext<PageTransitionContextType>({
 // Hook for using the context
 export const usePageTransition = () => useContext(PageTransitionContext);
 
-// Delay function
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 // Provider component
 export const PageTransitionProvider: React.FC<{
   children: React.ReactNode;
@@ -37,7 +33,6 @@ export const PageTransitionProvider: React.FC<{
   const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   // Use refs to track previous path and current click
   const previousPathname = useRef(pathname);
@@ -183,7 +178,7 @@ export const NavigationTrigger: React.FC<{
   const { startLoading } = usePageTransition();
   const pathname = usePathname();
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = () => {
     startLoading();
     if (onClick) onClick();
   };

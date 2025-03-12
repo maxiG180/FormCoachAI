@@ -9,7 +9,6 @@ import {
   signOut as firebaseSignOut,
   onAuthStateChanged,
   User,
-  UserCredential,
   sendPasswordResetEmail,
   updatePassword,
   updateEmail,

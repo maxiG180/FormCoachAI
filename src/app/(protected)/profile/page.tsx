@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "@/config/firebase";
@@ -36,16 +36,7 @@ export default function ProfileSettings() {
   const [activeTab, setActiveTab] = useState("profile");
   const [reAuthRequired, setReAuthRequired] = useState(false);
 
-  useEffect(() => {
-    if (!user) {
-      router.push("/login");
-      return;
-    }
-
-    loadUserProfile();
-  }, [user, router]);
-
-  const loadUserProfile = async () => {
+  const loadUserProfile = useCallback(async () => {
     if (!user?.uid) return;
 
     try {
@@ -59,7 +50,16 @@ export default function ProfileSettings() {
     } catch (error) {
       console.error("Error loading user profile:", error);
     }
-  };
+  }, [user?.uid]);
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+
+    loadUserProfile();
+  }, [user, router, loadUserProfile]);
 
   const handleProfileUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -83,8 +83,8 @@ export default function ProfileSettings() {
 
       await setDoc(doc(db, "users", user.uid), userData, { merge: true });
       setMessage("Profile updated successfully");
-    } catch (error: any) {
-      setError(error.message || "Failed to update profile");
+    } catch (error: unknown) {
+      setError((error as Error).message || "Failed to update profile");
     } finally {
       setLoading(false);
     }
@@ -125,11 +125,11 @@ export default function ProfileSettings() {
 
       setCurrentPassword("");
       setMessage("Password updated successfully");
-    } catch (error: any) {
-      if (error.code === "auth/requires-recent-login") {
+    } catch (error: unknown) {
+      if ((error as { code?: string }).code === "auth/requires-recent-login") {
         setReAuthRequired(true);
       } else {
-        setError(error.message || "Failed to update account");
+        setError((error as Error).message || "Failed to update account");
       }
     } finally {
       setLoading(false);

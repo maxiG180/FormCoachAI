@@ -33,8 +33,8 @@ const TestimonialCard = ({
       ))}
     </div>
     <p className="text-white mb-6 italic">
-      "<span className="text-[#FF6500]">{quote.substring(0, 1)}</span>
-      {quote.substring(1)}"
+      &quot;<span className="text-[#FF6500]">{quote.substring(0, 1)}</span>
+      {quote.substring(1)}&quot;
     </p>
     <div className="flex items-center">
       <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#FF6500] to-[#FF8533] flex items-center justify-center mr-3 overflow-hidden">

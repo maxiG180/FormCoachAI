@@ -2,7 +2,6 @@
 "use client";
 
 import { useState } from "react";
-import { Dispatch, SetStateAction } from "react";
 
 export default function ContactForm() {
   const [name, setName] = useState("");
@@ -46,7 +45,7 @@ export default function ContactForm() {
     <div className="p-8 bg-black rounded-xl shadow-lg border border-[#FF6500]/30 transition-all duration-300 hover:border-[#FF6500]">
       <h2 className="text-3xl font-bold mb-2 text-[#FF6500]">Get in Touch</h2>
       <p className="text-gray-300 mb-6">
-        Have questions about FormCoachAI? We're here to help!
+        Have questions about FormCoachAI? We&apos;re here to help!
       </p>
 
       {status === "success" && (
@@ -65,7 +64,7 @@ export default function ContactForm() {
                 d="M5 13l4 4L19 7"
               />
             </svg>
-            <p>Thank you for your message! We'll get back to you soon.</p>
+            <p>Thank you for your message! We&apos;ll get back to you soon.</p>
           </div>
         </div>
       )}

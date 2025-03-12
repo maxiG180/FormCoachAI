@@ -4,7 +4,6 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import { getAnalytics } from 'firebase/analytics';
 import { FirestoreManager } from "../lib/utils/firebase/firestoreSetup";
 
 const firebaseConfig = {
@@ -31,14 +30,8 @@ googleProvider.setCustomParameters({
   prompt: 'select_account'
 });
 
-// Initialize Analytics conditionally (only in browser environment)
-let analytics;
-if (typeof window !== 'undefined') {
-  analytics = getAnalytics(app);
-}
-
 // Error handling utility
-export const handleAuthError = (error: any): Error => {
+export const handleAuthError = (error: { code: string }): Error => {
   const errorCode = error.code;
   let errorMessage = 'An error occurred during authentication.';
 

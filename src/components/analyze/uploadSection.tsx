@@ -1,7 +1,7 @@
 // src/components/analyze/uploadSection.tsx
 "use client";
 
-import { ChangeEvent, useRef, useState, useEffect } from "react";
+import { ChangeEvent, useRef, useState, useEffect, useCallback } from "react";
 
 interface UploadSectionProps {
   onFileSelect: (file: File) => void;
@@ -29,13 +29,20 @@ const UploadSection = ({
   const [buttonText, setButtonText] = useState("Analyze Workout");
   const [buttonClicked, setButtonClicked] = useState(false);
 
+  const cleanupPreviewUrl = useCallback(() => {
+    if (videoPreviewUrl) {
+      URL.revokeObjectURL(videoPreviewUrl);
+      setVideoPreviewUrl(null);
+    }
+  }, [videoPreviewUrl]);
+
   // Update selected file when hasFile prop changes (external reset)
   useEffect(() => {
     if (!hasFile && selectedFile) {
       setSelectedFile(null);
       cleanupPreviewUrl();
     }
-  }, [hasFile]);
+  }, [hasFile, cleanupPreviewUrl, selectedFile]);
 
   // Reset button state when analyzing state changes
   useEffect(() => {
@@ -46,7 +53,7 @@ const UploadSection = ({
       setButtonText("Analyze Workout");
       setButtonClicked(false);
     }
-  }, [isAnalyzing]);
+  }, [isAnalyzing, cleanupPreviewUrl]);
 
   const validateFile = (file: File) => {
     if (!isExerciseSelected) {
@@ -123,19 +130,12 @@ const UploadSection = ({
   };
 
   // Clean up object URL when component unmounts or when preview changes
-  const cleanupPreviewUrl = () => {
-    if (videoPreviewUrl) {
-      URL.revokeObjectURL(videoPreviewUrl);
-      setVideoPreviewUrl(null);
-    }
-  };
-
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       cleanupPreviewUrl();
     };
-  }, []);
+  }, [cleanupPreviewUrl]);
 
   // Function to format file size
   const formatFileSize = (bytes: number): string => {

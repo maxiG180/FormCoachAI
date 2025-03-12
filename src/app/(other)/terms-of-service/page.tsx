@@ -13,11 +13,11 @@ export default function TermsOfService() {
       <section className="mb-8">
         <h2 className="text-2xl font-bold mb-4 text-[#FF6500]">Introduction</h2>
         <p className="mb-4">
-          Welcome to FormCoachAI. These Terms of Service ("Terms") govern your
-          access to and use of the FormCoachAI website, services, and
-          applications (collectively, the "Services"). By accessing or using our
-          Services, you agree to be bound by these Terms. If you disagree with
-          any part of the Terms, you may not access the Services.
+          Welcome to FormCoachAI. These Terms of Service govern your access to
+          and use of the FormCoachAI website, services, and applications. By
+          accessing or using our Services, you agree to be bound by these Terms.
+          If you disagree with any part of the Terms, you may not access the
+          Services.
         </p>
       </section>
 
@@ -192,10 +192,11 @@ export default function TermsOfService() {
       <section className="mb-8">
         <h2 className="text-2xl font-bold mb-4 text-[#FF6500]">Disclaimers</h2>
         <p className="mb-4 uppercase">
-          THE SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT
-          WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, WITHOUT
-          LIMITATION, IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-          PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
+          THE SERVICES ARE PROVIDED &quot;AS IS&quot; AND &quot;AS
+          AVAILABLE&quot; WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
+          IMPLIED, INCLUDING, WITHOUT LIMITATION, IMPLIED WARRANTIES OF
+          MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR
+          NON-INFRINGEMENT.
         </p>
         <p className="mb-4">
           We do not warrant that the Services will function uninterrupted,
@@ -261,7 +262,7 @@ export default function TermsOfService() {
         <p className="mb-4">
           We reserve the right to modify these Terms at any time. We will
           provide notice of significant changes by posting the updated Terms on
-          this page and updating the "Last Updated" date. Your continued use of
+          this page and updating the Last Updated date. Your continued use of
           the Services after such modifications constitutes your acceptance of
           the revised Terms.
         </p>

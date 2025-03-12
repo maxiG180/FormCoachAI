@@ -29,11 +29,6 @@ const PricingPage = () => {
     "monthly"
   );
 
-  // Toggle between monthly and yearly billing
-  const toggleBillingPeriod = () => {
-    setBillingPeriod(billingPeriod === "monthly" ? "yearly" : "monthly");
-  };
-
   // Get yearly discount multiplier
   const yearlyDiscountMultiplier = 0.8; // 20% discount for yearly
 
@@ -280,7 +275,7 @@ const PricingPage = () => {
                 Can I cancel my subscription at any time?
               </h3>
               <p className="text-gray-400">
-                Yes, you can cancel your subscription at any time. You'll
+                Yes, you can cancel your subscription at any time. You&apos;ll
                 continue to have access to your plan features until the end of
                 your billing period.
               </p>
@@ -303,7 +298,7 @@ const PricingPage = () => {
               </h3>
               <p className="text-gray-400">
                 Yes, you can upgrade or downgrade your plan at any time. When
-                upgrading, you'll be charged the prorated difference
+                upgrading, you&apos;ll be charged the prorated difference
                 immediately. When downgrading, the new price will take effect at
                 the next billing cycle.
               </p>

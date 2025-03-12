@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/authContext";
 import AuthCard from "@/components/ui/authCard";
 import ErrorAlert from "@/components/ui/errorAlert";
@@ -13,7 +12,6 @@ export default function ForgotPassword() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const { resetPassword } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -25,8 +23,8 @@ export default function ForgotPassword() {
     try {
       await resetPassword(email);
       setMessage("Check your email for password reset instructions");
-    } catch (error: any) {
-      setError(error.message || "Failed to reset password");
+    } catch (error) {
+      setError((error as Error).message || "Failed to reset password");
     } finally {
       setLoading(false);
     }
@@ -54,8 +52,8 @@ export default function ForgotPassword() {
       ) : (
         <>
           <p className="text-gray-400 mb-6">
-            Enter your email address and we'll send you instructions to reset
-            your password.
+            Enter your email address and we&apos;ll send you instructions to
+            reset your password.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">

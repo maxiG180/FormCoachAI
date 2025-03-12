@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 interface FeatureCardProps {
-  icon: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
+  icon: React.ReactElement<React.ComponentProps<typeof Clock>>;
   title: string;
   description: string;
   comingSoon?: boolean;

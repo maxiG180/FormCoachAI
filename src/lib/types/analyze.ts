@@ -6,8 +6,15 @@ export interface FeedbackItem {
   message: string;
   timestamp: number;
   severity?: 'minor' | 'moderate' | 'major';
-  keypoints?: any[];
+  keypoints?: Landmark[];
 }
+
+export interface Landmark {
+  x: number;
+  y: number;
+  visibility: number;
+}
+
 
 export interface AIIssue {
   type: string;

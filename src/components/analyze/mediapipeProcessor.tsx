@@ -25,7 +25,6 @@ const MediapipeProcessor = ({
   videoRef,
   canvasRef,
   isPlaying,
-  selectedExercise,
   onPoseDetected,
   feedback,
   onTrackingLost,
@@ -181,7 +180,15 @@ const MediapipeProcessor = ({
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isPlaying, onPoseDetected, feedback, onTrackingLost, onTrackingRestored]);
+  }, [
+    isPlaying,
+    onPoseDetected,
+    feedback,
+    onTrackingLost,
+    onTrackingRestored,
+    canvasRef,
+    videoRef,
+  ]);
 
   return null; // This is a processing component, not a visual one
 };

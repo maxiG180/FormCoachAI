@@ -23,7 +23,7 @@ interface VideoPlayerProps {
   selectedExercise: string;
   onPoseDetected?: (pose: PoseLandmarkerResult) => void;
   feedback?: FeedbackItem[];
-  isVideoComplete?: boolean;
+  isVideoComplete: boolean;
 }
 
 const VideoPlayer = ({
@@ -33,7 +33,7 @@ const VideoPlayer = ({
   selectedExercise,
   onPoseDetected = () => {},
   feedback = [],
-  isVideoComplete = false,
+  isVideoComplete, // Add this line
 }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -302,15 +302,38 @@ const VideoPlayer = ({
               </p>
               <ul className="text-gray-300 text-sm text-left list-disc pl-6 mb-4">
                 <li>Your full body is visible in the frame</li>
-                <li>There's adequate lighting</li>
-                <li>You're in the correct position (side view for squats)</li>
-                <li>You're not moving too quickly</li>
+                <li>There&apos;s adequate lighting</li>
+                <li>
+                  You&apos;re in the correct position (side view for squats)
+                </li>
+                <li>You&apos;re not moving too quickly</li>
               </ul>
               <button
                 onClick={handleRestart}
                 className="bg-[#FF6500] hover:bg-[#FF6500]/90 text-white px-4 py-2 rounded"
               >
                 Try Again
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Analysis Complete Message */}
+        {isVideoComplete && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-10">
+            <div className="text-center p-4 max-w-sm">
+              <p className="font-semibold text-green-400 text-lg mb-2">
+                Analysis Complete
+              </p>
+              <p className="text-white mb-4">
+                Your video analysis is complete. Check the feedback panel for
+                detailed results.
+              </p>
+              <button
+                onClick={handleRestart}
+                className="bg-[#FF6500] hover:bg-[#FF6500]/90 text-white px-4 py-2 rounded"
+              >
+                Analyze Again
               </button>
             </div>
           </div>
@@ -359,25 +382,34 @@ const VideoPlayer = ({
                 <div className="mt-4 space-y-2">
                   {RECORDING_GUIDELINES[
                     selectedExercise as keyof typeof RECORDING_GUIDELINES
-                  ]?.guidelines.map((guideline: any, index: number) => (
-                    <div key={index} className="flex items-start gap-2">
-                      <span
-                        className={`text-${
-                          guideline.importance === "critical"
-                            ? "red-500"
-                            : "[#FF6500]"
-                        }`}
-                      >
-                        •
-                      </span>
-                      <div>
-                        <span>{guideline.text}</span>
-                        <p className="text-sm text-gray-500 mt-1">
-                          {guideline.reason}
-                        </p>
+                  ]?.guidelines.map(
+                    (
+                      guideline: {
+                        text: string;
+                        reason: string;
+                        importance: string;
+                      },
+                      index: number
+                    ) => (
+                      <div key={index} className="flex items-start gap-2">
+                        <span
+                          className={`text-${
+                            guideline.importance === "critical"
+                              ? "red-500"
+                              : "[#FF6500]"
+                          }`}
+                        >
+                          •
+                        </span>
+                        <div>
+                          <span>{guideline.text}</span>
+                          <p className="text-sm text-gray-500 mt-1">
+                            {guideline.reason}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  )}
                 </div>
               </DialogDescription>
             </DialogHeader>

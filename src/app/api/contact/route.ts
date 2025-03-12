@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     }
     
     // Send email using Resend
-    const { data: emailData, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: 'FormCoachAI <no-reply@formcoachai.com>', 
       to: [process.env.ZOHO_EMAIL || 'contact@formcoachai.com'],
       replyTo: data.email, // Changed from reply_to to replyTo

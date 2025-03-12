@@ -1,7 +1,7 @@
 // src/app/not-found.tsx
 "use client";
 
-import React, { Suspense } from "react";
+import React from "react";
 import Link from "next/link";
 
 // Simple not-found page that doesn't use useSearchParams

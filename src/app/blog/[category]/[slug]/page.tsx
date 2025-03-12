@@ -6,15 +6,16 @@ import { getPostBySlug, getRelatedPosts, formatCategoryName } from "@/lib/blog";
 import BlogPostContent from "@/components/blog/blogPostContent";
 import "@/styles/blog.css";
 
-interface BlogPostPageProps {
+// For Next.js 15, let's use a simpler approach
+type Props = {
   params: {
     category: string;
     slug: string;
   };
-  searchParams?: Record<string, string | string[] | undefined>;
-}
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
+export default async function BlogPostPage({ params }: Props) {
   const { category, slug } = params;
   const post = await getPostBySlug(slug, category);
 
@@ -35,7 +36,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       {/* Header */}
       <div className="max-w-4xl mx-auto mb-10">
         <div className="mb-4">
-          <a
+          
             href={`/blog/${category}`}
             className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium hover:bg-blue-200 transition-colors"
           >
@@ -91,7 +92,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             {relatedPosts.map((related) => (
-              <a
+              
                 key={related.slug}
                 href={`/blog/${related.category}/${related.slug}`}
                 className="group"

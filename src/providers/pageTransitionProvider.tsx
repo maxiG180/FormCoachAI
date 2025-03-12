@@ -1,3 +1,4 @@
+// src/providers/pageTransitionProvider.tsx (updated)
 "use client";
 
 import React, {
@@ -6,6 +7,7 @@ import React, {
   useContext,
   useEffect,
   useRef,
+  Suspense,
 } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import LoadingSpinner from "@/components/ui/loadingSpinner";
@@ -15,6 +17,10 @@ interface PageTransitionContextType {
   isLoading: boolean;
   startLoading: () => void;
   stopLoading: () => void;
+  pathInfo?: {
+    pathname: string;
+    searchParams: URLSearchParams;
+  };
 }
 
 const PageTransitionContext = createContext<PageTransitionContextType>({
@@ -26,13 +32,35 @@ const PageTransitionContext = createContext<PageTransitionContextType>({
 // Hook for using the context
 export const usePageTransition = () => useContext(PageTransitionContext);
 
+// This component uses searchParams and will be wrapped in Suspense
+function SearchParamsComponent({
+  setPathInfo,
+}: {
+  setPathInfo: (info: {
+    pathname: string;
+    searchParams: URLSearchParams;
+  }) => void;
+}) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    setPathInfo({ pathname, searchParams });
+  }, [pathname, searchParams, setPathInfo]);
+
+  return null; // This component doesn't render anything
+}
+
 // Provider component
 export const PageTransitionProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [pathInfo, setPathInfo] = useState<{
+    pathname: string;
+    searchParams: URLSearchParams;
+  }>();
+  const pathname = pathInfo?.pathname;
 
   // Use refs to track previous path and current click
   const previousPathname = useRef(pathname);
@@ -66,6 +94,8 @@ export const PageTransitionProvider: React.FC<{
 
   // Track route changes to show/hide spinner
   useEffect(() => {
+    if (!pathname) return;
+
     // If the path changes, it means navigation has occurred
     if (previousPathname.current !== pathname) {
       // Navigation completed, stop loading after a short delay
@@ -82,10 +112,12 @@ export const PageTransitionProvider: React.FC<{
         }
       };
     }
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   // Intercept navigation clicks
   useEffect(() => {
+    if (!pathname) return;
+
     const handleNavigation = (href: string) => {
       // Extract just the pathname from the href
       const url = new URL(href, window.location.origin);
@@ -153,8 +185,13 @@ export const PageTransitionProvider: React.FC<{
 
   return (
     <PageTransitionContext.Provider
-      value={{ isLoading, startLoading, stopLoading }}
+      value={{ isLoading, startLoading, stopLoading, pathInfo }}
     >
+      {/* Suspense boundary for useSearchParams */}
+      <Suspense fallback={null}>
+        <SearchParamsComponent setPathInfo={setPathInfo} />
+      </Suspense>
+
       {children}
       {isLoading && (
         <LoadingSpinner
@@ -175,8 +212,8 @@ export const NavigationTrigger: React.FC<{
   onClick?: () => void;
   navigateTo?: string;
 }> = ({ children, className, onClick, navigateTo }) => {
-  const { startLoading } = usePageTransition();
-  const pathname = usePathname();
+  const { startLoading, pathInfo } = usePageTransition();
+  const pathname = pathInfo?.pathname || "/";
 
   const handleClick = () => {
     startLoading();

@@ -6,17 +6,19 @@ import { getPostBySlug, getRelatedPosts, formatCategoryName } from "@/lib/blog";
 import BlogPostContent from "@/components/blog/blogPostContent";
 import "@/styles/blog.css";
 
-// For Next.js 15, let's use a simpler approach
-type Props = {
-  params: {
-    category: string;
-    slug: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
+// Define the params type as a Promise
+type BlogPostParams = Promise<{
+  category: string;
+  slug: string;
+}>;
 
-export default async function BlogPostPage({ params }: Props) {
-  const { category, slug } = params;
+export default async function BlogPostPage({
+  params,
+}: {
+  params: BlogPostParams;
+}) {
+  // Await the params to get the actual values
+  const { category, slug } = await params;
   const post = await getPostBySlug(slug, category);
 
   if (!post) {

@@ -1,3 +1,4 @@
+// src/app/blog/[category]/[slug]/page.tsx
 import React from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -5,9 +6,16 @@ import { getPostBySlug, getRelatedPosts, formatCategoryName } from "@/lib/blog";
 import BlogPostContent from "@/components/blog/blogPostContent";
 import "@/styles/blog.css";
 
-// Workaround for the type issue
-export default async function BlogPostPage(props: any) {
-  const { category, slug } = props.params;
+interface BlogPostPageProps {
+  params: {
+    category: string;
+    slug: string;
+  };
+  searchParams?: Record<string, string | string[] | undefined>;
+}
+
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { category, slug } = params;
   const post = await getPostBySlug(slug, category);
 
   if (!post) {

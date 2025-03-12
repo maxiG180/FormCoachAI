@@ -1,12 +1,11 @@
 import { ReactNode } from "react";
-import { Video, Brain, TrendingUp, Clock } from "lucide-react";
+import { Video, Brain, TrendingUp } from "lucide-react";
 
 interface ProcessCardProps {
   number: number;
   title: string;
   description: string;
   icon: ReactNode;
-  comingSoon?: boolean;
 }
 
 const ProcessCard = ({
@@ -14,20 +13,11 @@ const ProcessCard = ({
   title,
   description,
   icon,
-  comingSoon = true, // All coming soon by default
 }: ProcessCardProps) => (
   <div className="bg-black backdrop-blur-sm rounded-xl border border-[#FF6500]/30 p-6 transition-all duration-300 hover:border-[#FF6500] hover:shadow-lg hover:shadow-[#FF6500]/20 h-full relative group">
     <div className="absolute -top-5 -left-2 w-12 h-12 rounded-full bg-gradient-to-r from-[#FF6500] to-[#FF8533] flex items-center justify-center text-white font-bold text-lg shadow-md">
       {number}
     </div>
-
-    {comingSoon && (
-      <div className="absolute -top-3 right-3 bg-[#FF6500]/90 text-white text-xs px-3 py-1 rounded-full flex items-center gap-1">
-        <Clock className="w-3 h-3" />
-        <span>Coming Soon</span>
-      </div>
-    )}
-
     <div className="pt-6">
       <div className="flex items-center mb-3">
         <div className="w-10 h-10 rounded-lg bg-[#FF6500]/20 flex items-center justify-center mr-3 group-hover:bg-[#FF6500]/40 transition-colors">
@@ -71,21 +61,18 @@ export default function ProcessSection() {
             title="Record Your Workout"
             description="Use your device's camera or upload a video of your exercise routine"
             icon={<Video className="h-5 w-5 text-[#FF6500]" />}
-            comingSoon={true}
           />
           <ProcessCard
             number={2}
             title="AI Analysis"
             description="Get instant feedback on your form with our advanced AI technology"
             icon={<Brain className="h-5 w-5 text-[#FF6500]" />}
-            comingSoon={true}
           />
           <ProcessCard
             number={3}
             title="Improve & Track"
             description="Follow personalized suggestions and track your progress over time"
             icon={<TrendingUp className="h-5 w-5 text-[#FF6500]" />}
-            comingSoon={true}
           />
         </div>
       </div>

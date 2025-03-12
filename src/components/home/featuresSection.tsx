@@ -21,7 +21,7 @@ const FeatureCard = ({
   icon,
   title,
   description,
-  comingSoon = true, // Default all to coming soon for this version
+  comingSoon = false,
 }: FeatureCardProps) => (
   <div className="bg-black rounded-xl border border-[#FF6500]/30 p-6 transition-all duration-300 hover:border-[#FF6500] h-full group relative">
     {/* Glow effect */}
@@ -82,37 +82,31 @@ export default function FeaturesSection() {
             icon={<Video />}
             title="Video Analysis"
             description="Upload your workout videos for detailed AI-powered form analysis on squats, bench press, and deadlifts."
-            comingSoon={true}
           />
           <FeatureCard
             icon={<Zap />}
             title="Real-time Feedback"
             description="Get instant, detailed feedback on your form including alignment, depth, and balance scores."
-            comingSoon={true}
           />
           <FeatureCard
             icon={<Shield />}
             title="Injury Prevention"
             description="Receive specific recommendations to correct form issues that could lead to injury during your lifts."
-            comingSoon={true}
           />
           <FeatureCard
             icon={<BarChart2 />}
             title="Performance Tracking"
             description="View your progress over time with detailed charts showing form improvements and consistency."
-            comingSoon={true}
           />
           <FeatureCard
             icon={<History />}
             title="Workout History"
             description="Access all your previous workout analyses to see your improvement journey and track progress."
-            comingSoon={true}
           />
           <FeatureCard
             icon={<CheckCircle />}
             title="Form Analysis Reports"
             description="Get comprehensive breakdowns of your exercise form with actionable improvement tips and rep counting."
-            comingSoon={true}
           />
         </div>
       </div>

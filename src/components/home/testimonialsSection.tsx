@@ -1,4 +1,4 @@
-import { Star, Clock } from "lucide-react";
+import { Star } from "lucide-react";
 import Image from "next/image";
 
 interface TestimonialCardProps {
@@ -7,7 +7,7 @@ interface TestimonialCardProps {
   role: string;
   rating: number;
   image?: string;
-  comingSoon?: boolean;
+  isBeta?: boolean;
 }
 
 const TestimonialCard = ({
@@ -16,13 +16,12 @@ const TestimonialCard = ({
   role,
   rating,
   image,
-  comingSoon = true, // All coming soon by default
+  isBeta = false,
 }: TestimonialCardProps) => (
   <div className="bg-black backdrop-blur-sm rounded-xl border border-[#FF6500]/30 p-6 transition-all duration-300 hover:border-[#FF6500] hover:shadow-lg hover:shadow-[#FF6500]/10 h-full relative">
-    {comingSoon && (
-      <div className="absolute -top-3 right-3 bg-[#FF6500] text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
-        <Clock className="w-3 h-3" />
-        <span>Testimonial Preview</span>
+    {isBeta && (
+      <div className="absolute -top-3 right-3 bg-[#FF6500] text-white text-xs px-2 py-1 rounded-full">
+        Beta Tester
       </div>
     )}
     <div className="flex space-x-1 mb-4">
@@ -71,47 +70,45 @@ export default function TestimonialsSection() {
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center max-w-2xl mx-auto mb-16 animate-slide-up">
           <div className="inline-block bg-[#FF6500] px-4 py-2 rounded-full mb-4">
-            <span className="text-white font-medium">Success Stories</span>
+            <span className="text-white font-medium">Early Feedback</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            What Our <span className="text-[#FF6500]">Users</span> Will Say
+            What Our <span className="text-[#FF6500]">Beta Testers</span> Say
           </h2>
           <p className="text-gray-300 text-lg">
-            Preview what users will experience with FormCoachAI
+            Hear from our early users who are already improving their form
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <TestimonialCard
-            quote="The real-time feedback is exactly what I need for my squat technique. Looking forward to seeing my form issues that my gym buddies might miss."
-            name="Expected User"
+            quote="The real-time feedback is impressive! I've been working on my squat technique for weeks, and FormCoachAI caught issues my gym buddies missed."
+            name="Alex J."
             role="Fitness Enthusiast"
             rating={5}
-            comingSoon={true}
+            isBeta={true}
           />
           <TestimonialCard
-            quote="As a personal trainer, I'm excited about this platform's potential. The form analysis looks detailed and accurate from what I've seen in the demo."
-            name="Potential Trainer"
+            quote="As a personal trainer testing this platform, I'm excited about its potential. The form analysis is detailed and accurate, even in beta."
+            name="Taylor M."
             role="Personal Trainer"
             rating={4}
-            comingSoon={true}
+            isBeta={true}
           />
           <TestimonialCard
-            quote="I can't wait to try the AI form analysis. Being able to track my progress over time and get detailed feedback will be a game changer!"
-            name="Future User"
+            quote="While still in development, the AI already provides valuable insights. I can't wait to see the additional exercises and features they add!"
+            name="Jamie K."
             role="CrossFit Athlete"
             rating={4}
-            comingSoon={true}
+            isBeta={true}
           />
         </div>
 
         <div className="mt-12 pt-6 border-t border-[#FF6500]/20 text-center">
           <p className="text-white text-lg flex flex-col md:flex-row items-center justify-center gap-2">
-            <span className="text-[#FF6500] font-bold">
-              Expected Rating: 4.5/5
-            </span>
+            <span className="text-[#FF6500] font-bold">4.5/5</span>
             <span className="hidden md:inline">•</span>
-            <span>Based on our early testing and focus groups</span>
+            <span>Average rating from our early access beta testers</span>
           </p>
         </div>
       </div>

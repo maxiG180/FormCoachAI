@@ -1,25 +1,17 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, PlayCircle, Info, Clock } from "lucide-react";
+import { ArrowRight, PlayCircle } from "lucide-react";
 import imagePath from "../../../public/img/analysisv1.png";
 
 interface StatCardProps {
   number: string;
   label: string;
-  comingSoon?: boolean;
 }
 
-const StatCard = ({ number, label, comingSoon = false }: StatCardProps) => (
+const StatCard = ({ number, label }: StatCardProps) => (
   <div className="bg-black rounded-xl border border-[#FF6500]/30 p-6 transition-all duration-300 hover:border-[#FF6500] relative group overflow-hidden">
     {/* Glow effect */}
     <div className="absolute inset-0 bg-gradient-to-br from-[#FF6500]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-    {comingSoon && (
-      <div className="absolute -top-1 -right-1 bg-[#FF6500]/90 text-xs text-white px-2 py-1 rounded-bl-lg rounded-tr-lg flex items-center gap-1">
-        <Clock className="w-3 h-3" />
-        <span>Soon</span>
-      </div>
-    )}
 
     <div className="relative flex flex-col items-center justify-center text-center">
       <h3 className="text-2xl md:text-3xl font-bold text-[#FF6500] mb-1">
@@ -33,14 +25,6 @@ const StatCard = ({ number, label, comingSoon = false }: StatCardProps) => (
 export default function HeroSection() {
   return (
     <section className="relative pt-32 pb-20 overflow-hidden">
-      {/* Coming Soon Banner */}
-      <div className="absolute top-0 left-0 right-0 bg-[#FF6500] text-white py-2 text-center z-50">
-        <div className="flex items-center justify-center gap-2">
-          <Info size={18} />
-          <span>Coming Soon - Join our Waitlist</span>
-        </div>
-      </div>
-
       {/* Background elements */}
       <div className="absolute inset-0">
         {/* Dark overlay with orange gradient */}
@@ -82,14 +66,17 @@ export default function HeroSection() {
                 href="/signup"
                 className="rounded-xl px-8 py-4 bg-[#FF6500] hover:bg-[#FF8533] transition-colors duration-300 text-white font-medium inline-flex items-center gap-2 group shadow-lg shadow-[#FF6500]/20"
               >
-                Join Waitlist
+                Start Free Trial
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
 
-              <div className="rounded-xl px-8 py-4 bg-black hover:bg-[#FF6500]/20 border border-[#FF6500]/30 backdrop-blur-sm text-white transition-colors duration-300 font-medium inline-flex items-center gap-2 cursor-not-allowed opacity-70">
+              <Link
+                href="/demo"
+                className="rounded-xl px-8 py-4 bg-black hover:bg-[#FF6500]/20 border border-[#FF6500]/30 backdrop-blur-sm text-white transition-colors duration-300 font-medium inline-flex items-center gap-2"
+              >
                 <PlayCircle className="w-5 h-5 text-[#FF6500]" />
-                Demo Coming Soon
-              </div>
+                Watch Demo
+              </Link>
             </div>
           </div>
 
@@ -119,20 +106,12 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Stats Section - Coming Soon version */}
+        {/* Stats Section - Realistic information */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16">
-          <StatCard
-            number="Real-time"
-            label="Form Analysis"
-            comingSoon={true}
-          />
-          <StatCard
-            number="SBD"
-            label="Major Lifts Covered"
-            comingSoon={true}
-          />
-          <StatCard number="90%" label="Detection Accuracy" comingSoon={true} />
-          <StatCard number="Email" label="Premium Support" comingSoon={true} />
+          <StatCard number="Real-time" label="Form Analysis" />
+          <StatCard number="90%" label="Detection Accuracy" />
+          <StatCard number="SBD" label="Major Lifts Covered" />
+          <StatCard number="Dedicated" label="Email Support" />
         </div>
       </div>
     </section>

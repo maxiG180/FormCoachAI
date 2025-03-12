@@ -1,0 +1,17 @@
+[
+    {
+      "name": "Form Analysis",
+      "slug": "form-analysis",
+      "description": "Articles about proper exercise technique, common form mistakes, and how to improve your workout form."
+    },
+    {
+      "name": "AI Technology",
+      "slug": "ai-technology",
+      "description": "Learn about the AI technology behind FormCoachAI and how it helps analyze and improve your workout form."
+    },
+    {
+      "name": "Fitness Tips",
+      "slug": "fitness-tips",
+      "description": "General fitness advice, workout programming, and tips to complement your form training."
+    }
+  ]

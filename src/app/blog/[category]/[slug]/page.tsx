@@ -5,14 +5,15 @@ import { getPostBySlug, getRelatedPosts, formatCategoryName } from "@/lib/blog";
 import BlogPostContent from "@/components/blog/blogPostContent";
 import "@/styles/blog.css";
 
-interface BlogPostPageProps {
+type BlogPostParams = {
   params: {
     category: string;
     slug: string;
   };
-}
+  searchParams: Record<string, string | string[] | undefined>;
+};
 
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
+export default async function BlogPostPage({ params }: BlogPostParams) {
   const { category, slug } = params;
   const post = await getPostBySlug(slug, category);
 

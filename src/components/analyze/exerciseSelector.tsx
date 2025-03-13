@@ -22,16 +22,19 @@ const ExerciseSelector = ({
       name: "Bench Press",
       description: "Build upper body strength",
       imageUrl: benchImg,
+      comingSoon: true,
     },
     {
       name: "Squats",
       description: "Develop lower body power",
       imageUrl: squatImg,
+      comingSoon: true,
     },
     {
       name: "Deadlifts",
       description: "Full body compound movement",
       imageUrl: deadliftImg,
+      comingSoon: true,
     },
   ];
 
@@ -70,13 +73,20 @@ const ExerciseSelector = ({
               }`}
             ></div>
 
+            {/* Coming Soon Overlay */}
+            <div className="absolute inset-0 bg-black/70 z-20 flex items-center justify-center backdrop-blur-sm">
+              <div className="bg-[#FF6500] text-white px-4 py-2 rounded-full font-bold text-sm animate-pulse">
+                Coming Soon
+              </div>
+            </div>
+
             {/* Image container */}
             <div className="relative w-full aspect-square overflow-hidden">
               <div className="absolute inset-0 bg-black/40 z-10"></div>
               <Image
                 src={exercise.imageUrl}
                 alt={exercise.name}
-                className={`object-cover w-full h-full transition-transform duration-700 ${
+                className={`object-cover w-full h-full transition-transform duration-700 grayscale ${
                   selectedExercise === exercise.name
                     ? "scale-110"
                     : "group-hover:scale-105"
@@ -105,7 +115,7 @@ const ExerciseSelector = ({
 
             {/* Selection indicator */}
             {selectedExercise === exercise.name && (
-              <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-[#FF6500] flex items-center justify-center z-20 animate-pulse">
+              <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-[#FF6500] flex items-center justify-center z-30 animate-pulse">
                 <svg
                   className="w-4 h-4 text-white"
                   viewBox="0 0 24 24"
@@ -126,11 +136,13 @@ const ExerciseSelector = ({
         ))}
       </div>
 
-      {!selectedExercise && (
-        <p className="text-sm sm:text-base text-[#FF6500] text-center font-medium">
-          Please select an exercise to continue
-        </p>
-      )}
+      <p className="text-base sm:text-lg text-[#FF6500] text-center font-medium">
+        Our exercise analysis features are coming soon!
+        <br className="md:hidden" />
+        <span className="md:ml-2">
+          Join our waitlist on the home page to get early access.
+        </span>
+      </p>
     </div>
   );
 };

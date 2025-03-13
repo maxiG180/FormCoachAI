@@ -5,6 +5,7 @@ import ExerciseSelector from "@/components/analyze/exerciseSelector";
 import UploadSection from "@/components/analyze/uploadSection";
 import FeedbackPanel from "@/components/analyze/feedbackPanel";
 import VideoPlayer from "@/components/analyze/videoPlayer";
+import ComingSoonOverlay from "@/components/analyze/comingSoonOverlay";
 import { PoseLandmarkerResult } from "@mediapipe/tasks-vision";
 import { FeedbackItem, AnalysisResult } from "@/lib/types/analyze";
 import { usePathname } from "next/navigation";
@@ -213,7 +214,10 @@ export default function AnalyzeClient() {
   };
 
   return (
-    <main className="min-h-screen pt-6 px-4 bg-black">
+    <main className="min-h-screen pt-6 px-4 bg-black relative">
+      {/* Coming Soon Overlay */}
+      <ComingSoonOverlay />
+
       <div className="container mx-auto py-6">
         <div className="bg-black border border-[#FF6500]/30 rounded-xl p-6 shadow-lg">
           <h1 className="text-2xl font-bold text-white mb-4">

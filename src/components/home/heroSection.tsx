@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, PlayCircle } from "lucide-react";
 import imagePath from "../../../public/img/analysisv1.png";
+import WaitlistForm from "../waitlist/waitlistForm";
 
 interface StatCardProps {
   number: string;
@@ -42,6 +43,11 @@ export default function HeroSection() {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
+        {/* Waitlist Box - Prominently placed at the top */}
+        <div className="max-w-xl mx-auto mb-16">
+          <WaitlistForm />
+        </div>
+
         <div className="flex flex-col md:flex-row items-center md:justify-between gap-12">
           <div className="md:w-1/2 animate-fade-in">
             <div className="inline-block bg-[#FF6500] px-4 py-2 rounded-full mb-6">

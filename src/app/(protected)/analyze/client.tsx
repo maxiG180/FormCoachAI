@@ -1,5 +1,3 @@
-// src/app/(protected)/analyze/client.tsx
-
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
@@ -80,9 +78,6 @@ export default function AnalyzeClient() {
   const [overallScore, setOverallScore] = useState(0);
   const [repCount, setRepCount] = useState(0);
   const [consecutiveGoodReps, setConsecutiveGoodReps] = useState(0);
-  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(
-    null
-  );
   const [aiConfidence, setAiConfidence] = useState(0);
 
   // Reset analysis state function
@@ -97,7 +92,6 @@ export default function AnalyzeClient() {
     setOverallScore(0);
     setRepCount(0);
     setConsecutiveGoodReps(0);
-    setAnalysisResult(null);
     setAiConfidence(0);
   };
 
@@ -166,7 +160,6 @@ export default function AnalyzeClient() {
     // Get final analysis results
     const finalResult = finalizeSquatAnalysis();
     if (finalResult) {
-      setAnalysisResult(finalResult);
       setFeedback(finalResult.feedback);
 
       // Fix for TypeScript error - Ensure finalResult.categoryScores has all required properties
@@ -217,7 +210,6 @@ export default function AnalyzeClient() {
     setRepCount(result.repCount || 0);
     setConsecutiveGoodReps(result.consecutiveGoodReps || 0);
     setAiConfidence(result.aiConfidence || 0);
-    setAnalysisResult(result);
   };
 
   return (

@@ -1,5 +1,3 @@
-// src/lib/types/analyze.ts
-
 export interface FeedbackItem {
   type: 'success' | 'warning' | 'error';
   category: 'form' | 'depth' | 'alignment' | 'balance';
@@ -135,6 +133,6 @@ export interface SquatAnalyzerConfig {
 
 export interface SquatValidationResult {
   isValid: boolean;
-  landmarks: any[];  // We would normally use a more specific type here
+  landmarks: unknown[];  // Using unknown instead of any
   confidence: number;
 }

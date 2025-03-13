@@ -2,7 +2,6 @@
 
 import { PoseLandmarkerResult } from "@mediapipe/tasks-vision";
 import { VIDEO_VALIDATION } from "@/lib/utils/constants/videoConstants";
-import { SQUAT_CONSTANTS } from "@/lib/utils/constants/squatConstants";
 
 interface VideoValidationResult {
   isValid: boolean;
@@ -21,7 +20,6 @@ interface PoseValidationResult {
 
 // Track stability across frames
 let stabilityCounter = 0;
-let previousLandmarkPositions: Record<number, {x: number, y: number}> = {};
 let trackingErrorCount = 0;
 
 /**
@@ -128,7 +126,6 @@ export const validateVideoFile = async (file: File): Promise<VideoValidationResu
  */
 export const resetTrackingData = (): void => {
   stabilityCounter = 0;
-  previousLandmarkPositions = {};
   trackingErrorCount = 0;
 };
 
@@ -243,28 +240,6 @@ export const validatePoseForSquats = (pose: PoseLandmarkerResult): PoseValidatio
     // Reset stability counter if angle is good
     stabilityCounter = Math.max(0, stabilityCounter - 1);
   }
-  
-  // Check tracking stability by comparing with previous positions
-  const currentPositions: Record<number, {x: number, y: number}> = {};
-  let totalMovement = 0;
-  let comparedPoints = 0;
-  
-  for (const { index } of requiredLandmarks) {
-    const landmark = landmarks[index];
-    currentPositions[index] = { x: landmark.x, y: landmark.y };
-    
-    // Compare with previous position if available
-    if (previousLandmarkPositions[index]) {
-      const prevPos = previousLandmarkPositions[index];
-      const dx = currentPositions[index].x - prevPos.x;
-      const dy = currentPositions[index].y - prevPos.y;
-      totalMovement += Math.sqrt(dx * dx + dy * dy);
-      comparedPoints++;
-    }
-  }
-  
-  // Save current positions for next comparison
-  previousLandmarkPositions = currentPositions;
   
   // Calculate confidence based on visibility and stability
   const avgVisibility = requiredLandmarks.reduce(

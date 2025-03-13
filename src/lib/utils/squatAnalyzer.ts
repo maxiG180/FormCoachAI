@@ -4,7 +4,7 @@ import { PoseLandmarkerResult } from "@mediapipe/tasks-vision";
 import { 
   FeedbackItem, 
   AnalysisResult, 
-  Landmark, 
+  Landmark,
   SquatState, 
   RepPhase,
   RepHistoryItem
@@ -113,8 +113,6 @@ export const analyzeSquatForm = (pose: PoseLandmarkerResult): AnalysisResult => 
   const rightHip = landmarks[24];
   const leftKnee = landmarks[25];
   const rightKnee = landmarks[26];
-  const leftAnkle = landmarks[27];
-  const rightAnkle = landmarks[28];
   
   // Calculate positions
   const hipHeight = (leftHip.y + rightHip.y) / 2;
@@ -148,7 +146,7 @@ export const analyzeSquatForm = (pose: PoseLandmarkerResult): AnalysisResult => 
                          (kneeHeight - state.initialPositions.hipHeight);
   
   // Determine squat phase
-  let prevPhase = state.repPhase;
+  const prevPhase = state.repPhase;
   
   // Track squat phases
   if (relativeDepth < SQUAT_CONSTANTS.SQUAT_DETECTION_THRESHOLD) {
@@ -156,7 +154,6 @@ export const analyzeSquatForm = (pose: PoseLandmarkerResult): AnalysisResult => 
     if (state.repPhase === 'bottom' || state.repPhase === 'ascent') {
       // Completed a rep
       state.repCount++;
-      evaluateRepQuality(state, feedback, categoryScores);
       state.repPhase = 'top';
     } else if (state.repPhase !== 'top') {
       state.repPhase = 'top';
@@ -225,7 +222,7 @@ export const analyzeSquatForm = (pose: PoseLandmarkerResult): AnalysisResult => 
 function analyzePhaseTransition(
   state: SquatState,
   prevPhase: RepPhase | undefined,
-  landmarks: any[],
+  landmarks: Record<number, { x: number; y: number; z: number; visibility?: number }>,
   feedback: FeedbackItem[],
   categoryScores: Record<string, number>
 ): void {
@@ -260,7 +257,11 @@ function analyzePhaseTransition(
           "alignment",
           "error",
           "moderate",
-          [leftHip, leftKnee, leftAnkle],
+          [
+            { x: leftHip.x, y: leftHip.y, visibility: leftHip.visibility || 1 },
+            { x: leftKnee.x, y: leftKnee.y, visibility: leftKnee.visibility || 1 },
+            { x: leftAnkle.x, y: leftAnkle.y, visibility: leftAnkle.visibility || 1 }
+          ],
           feedback,
           categoryScores
         );
@@ -283,7 +284,11 @@ function analyzePhaseTransition(
           "form",
           "warning",
           "moderate",
-          [leftShoulder, leftHip, leftKnee],
+          [
+            { x: leftShoulder.x, y: leftShoulder.y, visibility: leftShoulder.visibility || 1 },
+            { x: leftHip.x, y: leftHip.y, visibility: leftHip.visibility || 1 },
+            { x: leftKnee.x, y: leftKnee.y, visibility: leftKnee.visibility || 1 }
+          ],
           feedback,
           categoryScores
         );
@@ -302,7 +307,11 @@ function analyzePhaseTransition(
           "depth",
           "warning",
           "moderate",
-          [leftHip, leftKnee, leftAnkle],
+          [
+            { x: leftHip.x, y: leftHip.y, visibility: leftHip.visibility || 1 },
+            { x: leftKnee.x, y: leftKnee.y, visibility: leftKnee.visibility || 1 },
+            { x: leftAnkle.x, y: leftAnkle.y, visibility: leftAnkle.visibility || 1 }
+          ],
           feedback,
           categoryScores
         );
@@ -322,7 +331,10 @@ function analyzePhaseTransition(
           "balance",
           "warning",
           "moderate",
-          [leftHip, rightHip],
+          [
+            { x: leftHip.x, y: leftHip.y, visibility: leftHip.visibility || 1 },
+            { x: rightHip.x, y: rightHip.y, visibility: rightHip.visibility || 1 }
+          ],
           feedback,
           categoryScores
         );
@@ -345,7 +357,11 @@ function analyzePhaseTransition(
           "form",
           "warning",
           "minor",
-          [leftShoulder, leftHip, leftKnee],
+          [
+            { x: leftShoulder.x, y: leftShoulder.y, visibility: leftShoulder.visibility || 1 },
+            { x: leftHip.x, y: leftHip.y, visibility: leftHip.visibility || 1 },
+            { x: leftKnee.x, y: leftKnee.y, visibility: leftKnee.visibility || 1 }
+          ],
           feedback,
           categoryScores
         );
@@ -422,18 +438,6 @@ function analyzePhaseTransition(
 }
 
 /**
- * Evaluate the quality of a completed rep
- */
-function evaluateRepQuality(
-  state: SquatState,
-  feedback: FeedbackItem[],
-  categoryScores: Record<string, number>
-): void {
-  // All rep evaluation is handled in the phase transitions
-  // This is a placeholder for any additional analysis you might want to add
-}
-
-/**
  * Add feedback to the list and update category scores
  */
 function addFeedback(
@@ -441,7 +445,7 @@ function addFeedback(
   category: "form" | "depth" | "alignment" | "balance",
   type: "success" | "warning" | "error",
   severity: keyof typeof FEEDBACK_CONSTANTS.SEVERITY_SCORES,
-  keypoints: any[],
+  keypoints: Landmark[],
   feedback: FeedbackItem[],
   categoryScores: Record<string, number>
 ): void {

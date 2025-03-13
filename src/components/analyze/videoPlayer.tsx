@@ -24,6 +24,9 @@ interface VideoPlayerProps {
   onPoseDetected?: (pose: PoseLandmarkerResult) => void;
   feedback?: FeedbackItem[];
   isVideoComplete: boolean;
+  onPlay?: () => void;
+  onPause?: () => void;
+  onComplete?: () => void;
 }
 
 const VideoPlayer = ({
@@ -33,7 +36,10 @@ const VideoPlayer = ({
   selectedExercise,
   onPoseDetected = () => {},
   feedback = [],
-  isVideoComplete, // Add this line
+  isVideoComplete,
+  onPlay = () => {},
+  onPause = () => {},
+  onComplete = () => {},
 }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -132,7 +138,7 @@ const VideoPlayer = ({
     }
   };
 
-  // Handle play/restart button click
+  // Update your handlePlayClick function:
   const handlePlayClick = () => {
     if (videoRef.current) {
       if (videoRef.current.paused) {
@@ -141,6 +147,7 @@ const VideoPlayer = ({
           .then(() => {
             setIsPlaying(true);
             setHasTrackingError(false);
+            onPlay(); // Call the onPlay callback
           })
           .catch((error) => {
             console.error("Error playing video:", error);
@@ -148,6 +155,7 @@ const VideoPlayer = ({
       } else {
         videoRef.current.pause();
         setIsPlaying(false);
+        onPause(); // Call the onPause callback
       }
     }
   };
@@ -222,6 +230,14 @@ const VideoPlayer = ({
     }
   };
 
+  // And add this function:
+  const handleVideoEnded = () => {
+    if (videoRef.current) {
+      setIsPlaying(false);
+      onComplete(); // Call the onComplete callback
+    }
+  };
+
   const handleTrackingRestored = () => {
     setHasTrackingError(false);
   };
@@ -253,6 +269,7 @@ const VideoPlayer = ({
               }`}
               onLoadedData={handleVideoLoad}
               onClick={handlePlayClick}
+              onEnded={handleVideoEnded}
               playsInline
               muted
             />

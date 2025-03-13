@@ -1,4 +1,5 @@
 // src/app/(protected)/analyze/client.tsx
+
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
@@ -7,17 +8,36 @@ import UploadSection from "@/components/analyze/uploadSection";
 import FeedbackPanel from "@/components/analyze/feedbackPanel";
 import VideoPlayer from "@/components/analyze/videoPlayer";
 import { PoseLandmarkerResult } from "@mediapipe/tasks-vision";
-import { FeedbackItem } from "@/lib/types/analyze";
+import { FeedbackItem, AnalysisResult } from "@/lib/types/analyze";
 import { usePathname } from "next/navigation";
+import {
+  analyzeSquatForm,
+  resetSquatAnalyzer,
+  finalizeSquatAnalysis,
+} from "@/lib/utils/squatAnalyzer";
+import {
+  validateVideoFile,
+  resetTrackingData,
+} from "@/lib/utils/validationUtils";
+
+// Define a type for the category scores to ensure proper type checking
+type CategoryScores = {
+  form: number;
+  depth: number;
+  alignment: number;
+  balance: number;
+};
 
 export default function AnalyzeClient() {
   // State variables to control page flow
-  const [selectedExercise, setSelectedExercise] = useState<string>("");
+  const [selectedExercise, setSelectedExercise] = useState<string>("Squats");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [isVideoComplete, setIsVideoComplete] = useState<boolean>(false);
   const [showAnalysisResults, setShowAnalysisResults] =
     useState<boolean>(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
 
   // Add a ref to track component mount state
   const isMounted = useRef(true);
@@ -25,12 +45,16 @@ export default function AnalyzeClient() {
 
   // Reset all states completely
   const resetAllStates = useCallback(() => {
-    setSelectedExercise("");
+    setSelectedExercise("Squats");
     setSelectedFile(null);
     setIsAnalyzing(false);
     setIsVideoComplete(false);
     setShowAnalysisResults(false);
+    setValidationError(null);
+    setValidationWarnings([]);
     resetAnalysisState();
+    resetTrackingData();
+    resetSquatAnalyzer();
   }, []);
 
   // Cleanup on unmount and handle re-mount
@@ -43,11 +67,11 @@ export default function AnalyzeClient() {
     return () => {
       isMounted.current = false;
     };
-  }, [pathname, resetAllStates]); // Added resetAllStates to dependency array
+  }, [pathname, resetAllStates]);
 
   // State for analysis data
   const [feedback, setFeedback] = useState<FeedbackItem[]>([]);
-  const [categoryScores, setCategoryScores] = useState({
+  const [categoryScores, setCategoryScores] = useState<CategoryScores>({
     form: 0,
     depth: 0,
     alignment: 0,
@@ -56,6 +80,10 @@ export default function AnalyzeClient() {
   const [overallScore, setOverallScore] = useState(0);
   const [repCount, setRepCount] = useState(0);
   const [consecutiveGoodReps, setConsecutiveGoodReps] = useState(0);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(
+    null
+  );
+  const [aiConfidence, setAiConfidence] = useState(0);
 
   // Reset analysis state function
   const resetAnalysisState = () => {
@@ -69,6 +97,8 @@ export default function AnalyzeClient() {
     setOverallScore(0);
     setRepCount(0);
     setConsecutiveGoodReps(0);
+    setAnalysisResult(null);
+    setAiConfidence(0);
   };
 
   // Handlers for component interactions
@@ -82,10 +112,30 @@ export default function AnalyzeClient() {
     resetAnalysisState();
   };
 
-  const handleFileSelect = (file: File) => {
-    setSelectedFile(file);
-    setIsVideoComplete(false);
-    setShowAnalysisResults(false);
+  const handleFileSelect = async (file: File) => {
+    // Validate the file first
+    try {
+      const validation = await validateVideoFile(file);
+
+      if (!validation.isValid) {
+        setValidationError(validation.errors[0]);
+        setValidationWarnings(validation.warnings);
+        return;
+      }
+
+      if (validation.warnings.length > 0) {
+        setValidationWarnings(validation.warnings);
+      }
+
+      // File is valid, proceed
+      setSelectedFile(file);
+      setIsVideoComplete(false);
+      setShowAnalysisResults(false);
+      setValidationError(null);
+    } catch (error) {
+      console.error("Error validating video:", error);
+      setValidationError("Failed to validate video. Please try another file.");
+    }
   };
 
   // This function is specifically for the VideoPlayer component
@@ -93,46 +143,81 @@ export default function AnalyzeClient() {
     setSelectedFile(file);
     if (!file) {
       setShowAnalysisResults(false);
+      setValidationError(null);
+      setValidationWarnings([]);
     }
   };
 
-  const handleAnalyze = () => {
-    // Immediately set analyzing state for visual feedback
+  // Handle video playback events
+  const handleVideoPlay = () => {
     setIsAnalyzing(true);
-
-    // For demo purposes, simulate analysis completion after 2 seconds (reduced from 5)
-    const analysisTimer = setTimeout(() => {
-      // Check if component is still mounted before updating state
-      if (isMounted.current) {
-        setIsVideoComplete(true);
-        setIsAnalyzing(false);
-        setShowAnalysisResults(true);
-
-        // Set dummy results
-        setCategoryScores({
-          form: 88,
-          depth: 82,
-          alignment: 85,
-          balance: 90,
-        });
-        setOverallScore(85);
-        setRepCount(5);
-        setConsecutiveGoodReps(3);
-      }
-    }, 2000); // Reduced to 2 seconds for better UX
-
-    // Cleanup timer if component unmounts
-    return () => clearTimeout(analysisTimer);
+    resetSquatAnalyzer();
   };
 
-  // Dummy handler for pose detection
+  const handleVideoPause = () => {
+    // Optionally handle pause events
+  };
+
+  const handleVideoComplete = () => {
+    setIsVideoComplete(true);
+    setIsAnalyzing(false);
+    setShowAnalysisResults(true);
+
+    // Get final analysis results
+    const finalResult = finalizeSquatAnalysis();
+    if (finalResult) {
+      setAnalysisResult(finalResult);
+      setFeedback(finalResult.feedback);
+
+      // Fix for TypeScript error - Ensure finalResult.categoryScores has all required properties
+      const scores: CategoryScores = {
+        form: finalResult.categoryScores.form || 0,
+        depth: finalResult.categoryScores.depth || 0,
+        alignment: finalResult.categoryScores.alignment || 0,
+        balance: finalResult.categoryScores.balance || 0,
+      };
+      setCategoryScores(scores);
+
+      setOverallScore(finalResult.overallScore);
+      setRepCount(finalResult.repCount || 0);
+      setConsecutiveGoodReps(finalResult.consecutiveGoodReps || 0);
+      setAiConfidence(finalResult.aiConfidence || 95);
+    }
+  };
+
+  // Handle pose detection from MediaPipe
   const handlePoseDetected = (pose: PoseLandmarkerResult) => {
-    // This would contain real pose analysis logic
-    console.log(
-      "Pose detected",
-      pose.landmarks?.[0]?.length || 0,
-      "landmarks found"
-    );
+    if (!isAnalyzing) return;
+
+    // Analyze the pose based on the selected exercise
+    let result: AnalysisResult;
+
+    switch (selectedExercise) {
+      case "Squats":
+        result = analyzeSquatForm(pose);
+        break;
+      // Add other exercises when implemented
+      default:
+        result = analyzeSquatForm(pose);
+    }
+
+    // Update state with the analysis results
+    setFeedback(result.feedback);
+
+    // Fix for TypeScript error - Ensure result.categoryScores has all required properties
+    const scores: CategoryScores = {
+      form: result.categoryScores.form || 0,
+      depth: result.categoryScores.depth || 0,
+      alignment: result.categoryScores.alignment || 0,
+      balance: result.categoryScores.balance || 0,
+    };
+    setCategoryScores(scores);
+
+    setOverallScore(result.overallScore);
+    setRepCount(result.repCount || 0);
+    setConsecutiveGoodReps(result.consecutiveGoodReps || 0);
+    setAiConfidence(result.aiConfidence || 0);
+    setAnalysisResult(result);
   };
 
   return (
@@ -147,14 +232,34 @@ export default function AnalyzeClient() {
             form and technique.
           </p>
 
+          {/* Display validation errors/warnings prominently */}
+          {validationError && (
+            <div className="bg-red-500/20 text-red-400 p-3 rounded-lg mb-6">
+              <h3 className="font-semibold mb-1">Video Validation Error</h3>
+              <p>{validationError}</p>
+            </div>
+          )}
+
+          {validationWarnings.length > 0 && !validationError && (
+            <div className="bg-yellow-500/20 text-yellow-400 p-3 rounded-lg mb-6">
+              <h3 className="font-semibold mb-1">Video Recommendations</h3>
+              <ul className="list-disc list-inside">
+                {validationWarnings.map((warning, index) => (
+                  <li key={index}>{warning}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {!showAnalysisResults ? (
             /* Selection and Upload Phase */
             <div className="space-y-10">
               {/* Exercise selection - always shown */}
               <div className="w-full">
+                {/* Fix for missing onValidityChange prop */}
                 <ExerciseSelector
                   onExerciseSelect={handleExerciseSelect}
-                  onValidityChange={() => {}}
+                  onValidityChange={() => {}} // Add the missing prop
                   selectedExercise={selectedExercise}
                 />
               </div>
@@ -170,7 +275,7 @@ export default function AnalyzeClient() {
                   <div className="max-w-3xl mx-auto">
                     <UploadSection
                       onFileSelect={handleFileSelect}
-                      onAnalyze={handleAnalyze}
+                      onAnalyze={() => setShowAnalysisResults(true)}
                       isAnalyzing={isAnalyzing}
                       hasFile={!!selectedFile}
                       isExerciseSelected={!!selectedExercise}
@@ -189,10 +294,14 @@ export default function AnalyzeClient() {
                   onRestart={() => {
                     setIsVideoComplete(false);
                     resetAnalysisState();
+                    resetSquatAnalyzer();
                   }}
                   onFileUpload={handleVideoFileUpload}
                   selectedExercise={selectedExercise}
                   onPoseDetected={handlePoseDetected}
+                  onPlay={handleVideoPlay}
+                  onPause={handleVideoPause}
+                  onComplete={handleVideoComplete}
                   feedback={feedback}
                   isVideoComplete={isVideoComplete}
                 />
@@ -207,6 +316,7 @@ export default function AnalyzeClient() {
                   overallScore={overallScore}
                   repCount={repCount}
                   consecutiveGoodReps={consecutiveGoodReps}
+                  aiConfidence={aiConfidence}
                 />
               </div>
             </div>
